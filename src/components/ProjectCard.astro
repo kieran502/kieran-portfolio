@@ -1,0 +1,472 @@
+---
+import ProjectMedia from './ProjectMedia.astro';
+import { getHeroImage, projectUrl, type Project } from '../lib/content';
+
+interface Props {
+  project: Project;
+  /**
+   * panel:    lead project showcase: text over a colour field, image bleeding off the
+   *           right edge behind a diagonal boundary.
+   * row:      supporting project showcase: full-bleed image left, text right.
+   * featured: large image-led card (Work page).
+   * compact:  smaller card for the wider catalogue.
+   */
+  variant?: 'panel' | 'row' | 'featured' | 'compact';
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { project, variant = 'compact', headingLevel: Heading = 'h3' } = Astro.props;
+const { title, sector, capabilities, note, caseStudyReady, tone, heroImageStyle } = project.data;
+const isScreenshot = Boolean(getHeroImage(project)) && heroImageStyle === 'screenshot';
+
+// Showcase cards (panel, row) keep to title, summary and call to action.
+const isSplit = variant === 'panel' || variant === 'row';
+// Listing cards use the fuller description; the homepage showcases keep the short summary.
+const summary = isSplit ? project.data.summary : (project.data.listingSummary ?? project.data.summary);
+
+const media = {
+  panel: { ratio: 'card', sizes: '(min-width: 72rem) 28vw, (min-width: 40rem) 55vw, 100vw', plain: true },
+  row: { ratio: 'card', sizes: '(min-width: 72rem) 28vw, (min-width: 40rem) 55vw, 100vw', plain: true },
+  featured: { ratio: 'card', sizes: '(min-width: 40rem) 50vw, 100vw', plain: false, quiet: true },
+  compact: { ratio: 'wide', sizes: '(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw', plain: false, quiet: true },
+} as const;
+---
+
+<article
+  class:list={[
+    'card',
+    `card--${variant}`,
+    `tone-${tone}`,
+    { 'card--link': caseStudyReady, 'card--screenshot': isScreenshot },
+  ]}
+  data-project
+  data-sector={sector ?? ''}
+  data-capabilities={capabilities.join('|')}
+>
+  <div class="media">
+    <ProjectMedia project={project} {...media[variant]} />
+  </div>
+  <div class="body">
+    <Heading class="title">
+      {caseStudyReady ? <a href={projectUrl(project)}>{title}</a> : title}
+    </Heading>
+    <p class="summary">{summary}</p>
+    {
+      !isSplit && (sector || capabilities.length > 0) && (
+        <ul class="pills" aria-label="Sector and capabilities">
+          {sector && <li class="pill pill--sector">{sector}</li>}
+          {capabilities.map((capability) => (
+            <li class="pill">{capability}</li>
+          ))}
+        </ul>
+      )
+    }
+    {
+      /* Outside the homepage showcases, a project without a case study simply has no link. */
+      (caseStudyReady || isSplit || note) && (
+        <p class="status">
+          {caseStudyReady ? (
+            <span class="read" aria-hidden="true">
+              {isSplit ? 'Case study' : 'Read case study'} <span class="arrow">&rarr;</span>
+            </span>
+          ) : (
+            isSplit && <span class="quiet">Case study in preparation</span>
+          )}
+          {note && <span class="quiet note">{note}</span>}
+        </p>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .card {
+    --card-muted: var(--color-muted);
+    --card-accent: var(--color-coral-strong);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 1.1rem;
+  }
+
+  .media {
+    border-radius: var(--radius);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .card--link:hover .media {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+
+  .body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .title {
+    font-size: 1.375rem;
+  }
+
+  /* ---- featured: large image-led card on a white surface (Work page) ---- */
+  .card--featured {
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: calc(var(--radius) + 6px);
+    background: var(--color-surface);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .card--featured .media,
+  .card--featured .media :global(img),
+  .card--featured .media :global(.ph) {
+    border-radius: 0;
+  }
+
+  .card--featured.card--link:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+
+  .card--featured.card--link:hover .media {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .card--featured .body {
+    gap: 0.85rem;
+    padding: clamp(1.4rem, 1rem + 1.4vw, 2.25rem);
+  }
+
+  .card--featured .title {
+    font-size: clamp(1.875rem, 1.5rem + 1.4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .card--featured .summary {
+    font-size: 1.0625rem;
+  }
+
+  .card--featured .status {
+    padding-top: 0.6rem;
+    font-size: 1rem;
+  }
+
+  .title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Makes the whole card clickable while keeping one link for assistive tech. */
+  .title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+
+  .card--link:hover .title a {
+    color: var(--color-teal);
+  }
+
+  .summary {
+    max-width: 34rem;
+  }
+
+  .card--compact .summary {
+    font-size: 1rem;
+  }
+
+  .status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin-top: auto;
+    padding-top: 0.4rem;
+    font-size: var(--text-sm);
+  }
+
+  .quiet {
+    color: var(--card-muted);
+  }
+
+  .read {
+    color: var(--card-accent);
+    font-weight: 650;
+  }
+
+  .arrow {
+    display: inline-block;
+    transition: transform 0.15s ease;
+  }
+
+  .card--link:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  .note:not(:first-child)::before {
+    content: '· ';
+  }
+
+  /* ---- panel and row: project showcases ----
+     One colour field per card. The image is never boxed in: it bleeds to the card edge.
+     panel = lead projects (text left, image right behind a diagonal boundary).
+     row   = supporting projects (image left, text right). */
+  .card--panel,
+  .card--row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    overflow: hidden;
+    border-radius: calc(var(--radius) + 6px);
+    background: var(--card-bg);
+    color: var(--card-fg);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  :is(.card--panel, .card--row).tone-deep {
+    --card-bg: var(--color-deep);
+    --card-fg: #fff;
+    --card-muted: #c3d6d4;
+    --card-accent: #fff;
+    --card-slot: #2b5958;
+    --card-wedge: var(--color-coral);
+  }
+
+  :is(.card--panel, .card--row).tone-teal {
+    --card-bg: var(--color-teal);
+    --card-fg: #fff;
+    --card-muted: #e6f4f2;
+    --card-accent: #fff;
+    --card-slot: #0a6163;
+    --card-wedge: transparent;
+  }
+
+  :is(.card--panel, .card--row).tone-coral {
+    --card-bg: var(--color-coral-soft);
+    --card-fg: var(--color-deep);
+    --card-muted: #4c5f6e;
+    --card-accent: #a53d29;
+    --card-slot: #f3cbbf;
+    --card-wedge: transparent;
+  }
+
+  :is(.card--panel, .card--row).tone-sand {
+    --card-bg: var(--color-sand);
+    --card-fg: var(--color-deep);
+    --card-muted: #4c5f6e;
+    --card-accent: #a53d29;
+    --card-slot: #e2d9c8;
+    --card-wedge: transparent;
+  }
+
+  /* Image area */
+  .card--panel .media,
+  .card--row .media {
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .card--panel .media :global(.ph),
+  .card--panel .media :global(img),
+  .card--row .media :global(.ph),
+  .card--row .media :global(img) {
+    height: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 0;
+  }
+
+  /* Empty slots: flat neutral fill and a label, with no frame, so they sit in the
+     composition exactly where the approved image will go. */
+  .card--panel .media :global(.ph),
+  .card--row .media :global(.ph) {
+    background: var(--card-slot);
+    color: var(--card-fg);
+  }
+
+  .card--panel .media :global(.ph::before),
+  .card--row .media :global(.ph::before) {
+    content: none;
+  }
+
+  .card--panel.card--link:hover,
+  .card--row.card--link:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+
+  .card--panel.card--link:hover .media,
+  .card--row.card--link:hover .media {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Text */
+  .card--panel .body,
+  .card--row .body {
+    position: relative;
+    z-index: 1;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: clamp(1.5rem, 1rem + 1.6vw, 2.25rem);
+  }
+
+  .card--panel .title,
+  .card--row .title {
+    color: inherit;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+
+  .card--panel .title {
+    font-size: clamp(2.5rem, 1.7rem + 2.6vw, 3.625rem);
+  }
+
+  .card--row .title {
+    font-size: clamp(1.875rem, 1.4rem + 1.5vw, 2.5rem);
+  }
+
+  .card--panel.card--link:hover .title a,
+  .card--row.card--link:hover .title a {
+    color: inherit;
+  }
+
+  .card--panel .summary {
+    font-size: 1.0625rem;
+    line-height: 1.4;
+  }
+
+  .card--row .summary {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .card--panel .status,
+  .card--row .status {
+    margin-top: 0.5rem;
+    padding-top: 0;
+    font-size: 0.9375rem;
+  }
+
+  /* Call to action. "Case study" is an outlined button (the whole card is the link).
+     Unfinished case studies get a dashed, non-interactive label in the same position. */
+  .card--panel .read,
+  .card--row .read,
+  .card--panel .quiet:not(.note),
+  .card--row .quiet:not(.note) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .card--panel .read,
+  .card--row .read {
+    border: 1.5px solid var(--card-accent);
+    font-weight: 700;
+  }
+
+  .card--panel.card--link:hover .read,
+  .card--row.card--link:hover .read {
+    background: var(--card-accent);
+    color: var(--card-bg);
+  }
+
+  .card--panel .quiet:not(.note),
+  .card--row .quiet:not(.note) {
+    border: 1px dashed currentColor;
+    font-size: 0.875rem;
+  }
+
+  .card--panel :global(:focus-visible),
+  .card--row :global(:focus-visible) {
+    outline-color: currentColor;
+  }
+
+  @media (min-width: 40rem) {
+    /* Lead showcase: text sits on the colour field; the image fills the right 57% and
+       is cut on a diagonal, so the two overlap rather than sitting in separate boxes. */
+    .card--panel {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      min-height: clamp(17.5rem, 13rem + 8vw, 19.5rem);
+    }
+
+    .card--panel .media {
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 57%;
+      clip-path: polygon(24% 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .card--panel .media :global(.ph),
+    .card--panel .media :global(img) {
+      aspect-ratio: auto;
+    }
+
+    /* Keeps the placeholder label inside the visible part of the diagonal slot. */
+    .card--panel .media :global(.ph) {
+      padding-left: 26%;
+    }
+
+    /* Screenshots: a floating screen that overlaps the colour field and runs off the
+       right and bottom edges, instead of a cropped full-bleed photo. */
+    .card--panel.card--screenshot .media {
+      clip-path: none;
+    }
+
+    .card--panel.card--screenshot .media :global(img) {
+      position: absolute;
+      top: 13%;
+      left: 13%;
+      width: 135%;
+      max-width: none;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
+    }
+
+    /* Accent wedge tucked under the image's diagonal edge (lead dark cards only). */
+    .card--panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--card-wedge);
+      clip-path: polygon(31% 100%, 43.5% 100%, 50% 52%);
+    }
+
+    .card--panel .body {
+      flex: none;
+      width: 45%;
+      padding-right: 0.25rem;
+    }
+
+    /* Supporting showcase: full-bleed image left, text right. */
+    .card--row {
+      grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+      min-height: clamp(13.5rem, 10.5rem + 5vw, 15.5rem);
+    }
+
+    .card--row .media :global(.ph),
+    .card--row .media :global(img) {
+      aspect-ratio: auto;
+    }
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import '@fontsource-variable/figtree/index.css';
+import '@fontsource-variable/fraunces/index.css';
+import '../styles/global.css';
+import SeoHead from '../components/SeoHead.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import type { ComponentProps } from 'astro/types';
+
+type Props = ComponentProps<typeof SeoHead> & {
+  /** Use the wider ~1,300px content width (header and footer included). */
+  wide?: boolean;
+  /** Design update v2: sans-serif display headings (header and footer included). */
+  sansHeadings?: boolean;
+};
+
+const { wide = false, sansHeadings = false, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#FAF9F6" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <SeoHead {...seo} />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body class:list={[{ wide, 'sans-headings': sansHeadings }]}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

@@ -1,0 +1,198 @@
+---
+import { site, nav, contact } from '../site.config';
+
+const hasContact = Boolean(contact.email || contact.linkedin);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <section id="contact" class="contact" aria-labelledby="contact-heading">
+    <div class="container contact-inner">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2 id="contact-heading">Let's talk.</h2>
+      </div>
+      <div class="contact-body">
+        <p>
+          I'm open to conversations about senior product, technology and AI leadership roles.
+        </p>
+        {
+          hasContact ? (
+            <ul class="contact-links" role="list">
+              {contact.email && (
+                <li>
+                  <a class="button button--accent" href={`mailto:${contact.email}`}>
+                    Email me
+                  </a>
+                </li>
+              )}
+              {contact.linkedin && (
+                <li>
+                  <a class="button button--light" href={contact.linkedin} rel="me noopener">
+                    LinkedIn
+                  </a>
+                </li>
+              )}
+            </ul>
+          ) : (
+            <p class="contact-placeholder">
+              <span class="placeholder-tag">To supply</span>
+              Email and LinkedIn links appear here once approved contact details are added to{' '}
+              <code>src/site.config.ts</code>.
+            </p>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <div class="container base">
+    <p>&copy; {year} {site.name}</p>
+    <nav aria-label="Footer">
+      <ul role="list">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-section);
+    background: var(--color-deep);
+    color: #dbe7e6;
+  }
+
+  .contact {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(3rem, 2rem + 5vw, 5.5rem);
+  }
+
+  .contact::after {
+    content: '';
+    position: absolute;
+    right: -7rem;
+    bottom: -11rem;
+    width: 22rem;
+    height: 22rem;
+    border-radius: 50%;
+    background: var(--color-coral);
+    opacity: 0.9;
+  }
+
+  .contact-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 1.5rem 4rem;
+  }
+
+  @media (min-width: 48rem) {
+    .contact-inner {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: end;
+    }
+  }
+
+  .eyebrow {
+    color: #8fd0cc;
+  }
+
+  h2 {
+    color: #fff;
+    font-size: clamp(2.25rem, 1.6rem + 3vw, 3.5rem);
+  }
+
+  .contact-body {
+    max-width: 34rem;
+    font-size: var(--text-lg);
+    line-height: 1.5;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .button--light {
+    border-color: #fff;
+    color: #fff;
+  }
+
+  .button--light:hover {
+    background: #fff;
+    color: var(--color-deep);
+  }
+
+  .button--accent {
+    background: #fff;
+    color: var(--color-deep);
+  }
+
+  .button--accent:hover {
+    background: var(--color-coral-soft);
+    color: var(--color-deep);
+  }
+
+  .contact-placeholder {
+    margin-top: 1.25rem;
+    padding: 0.8rem 1rem;
+    border: 1px dashed rgb(255 255 255 / 0.45);
+    border-radius: var(--radius-sm);
+    background: rgb(24 60 64 / 0.85);
+    font-size: 0.9688rem;
+  }
+
+  .contact-placeholder .placeholder-tag {
+    border-color: #f6b9ab;
+    color: #f6b9ab;
+  }
+
+  .contact-placeholder code {
+    font-size: 0.9em;
+  }
+
+  .base {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+    font-size: var(--text-sm);
+  }
+
+  .base ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+  }
+
+  .base a {
+    display: inline-block;
+    padding-block: 0.35rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .base a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  :global(.site-footer :focus-visible) {
+    outline-color: #fff;
+  }
+</style>

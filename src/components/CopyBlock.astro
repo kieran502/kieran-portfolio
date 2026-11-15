@@ -1,0 +1,26 @@
+---
+/**
+ * Renders plain-text copy from a content field as paragraphs.
+ * Paragraphs starting with "PLACEHOLDER:" are shown as marked "to confirm" notes.
+ */
+import { parseCopy } from '../lib/content';
+
+interface Props {
+  text?: string;
+}
+
+const paragraphs = parseCopy(Astro.props.text);
+---
+
+{
+  paragraphs.map((paragraph) =>
+    paragraph.placeholder ? (
+      <p class="placeholder-copy">
+        <span class="placeholder-tag">To confirm</span>
+        {paragraph.text}
+      </p>
+    ) : (
+      <p>{paragraph.text}</p>
+    ),
+  )
+}

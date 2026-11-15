@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getArticles } from '../../lib/content';
+
+const articles = await getArticles();
+const lead = articles.find((article) => article.data.featured) ?? articles[0];
+const rest = articles.filter((article) => article !== lead);
+---
+
+<BaseLayout
+  title="Writing"
+  description="Articles and practical notes from Kieran Sawyer on product, technology and AI delivery."
+>
+  <div class="container">
+    <header class="page-header">
+      <p class="eyebrow">Writing</p>
+      <h1>Ideas, lessons and practical notes</h1>
+      <p class="lede">On product, technology, AI and what it takes to deliver them well.</p>
+    </header>
+
+    {
+      lead ? (
+        <>
+          <ArticleCard article={lead} variant="featured" headingLevel="h2" />
+          {rest.length > 0 && (
+            <section class="more" aria-labelledby="more-heading">
+              <h2 id="more-heading">More articles</h2>
+              <div class="list">
+                {rest.map((article) => (
+                  <ArticleCard article={article} />
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      ) : (
+        <p class="lede muted">No articles have been published yet.</p>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .more {
+    padding-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+
+  .more h2 {
+    margin-bottom: 1.25rem;
+    font-size: var(--text-h3);
+  }
+
+  .list {
+    border-bottom: 1px solid var(--color-border);
+  }
+</style>

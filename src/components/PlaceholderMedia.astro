@@ -1,0 +1,217 @@
+---
+/**
+ * Stand-in for imagery that has not been supplied or rights-approved yet.
+ * Deliberately typographic so it can never be mistaken for a real project photo.
+ */
+interface Props {
+  /** Large display text, usually the project name. Decorative. Not used when `plain`. */
+  title?: string;
+  /** What should replace this placeholder. */
+  label?: string;
+  /** Extra line under the label when `plain`, e.g. which imagery is needed. */
+  detail?: string;
+  tone?: 'teal' | 'deep' | 'coral' | 'sand';
+  ratio?: 'wide' | 'card' | 'thumb' | 'portrait';
+  /** A plain framed image slot with no shapes: reads as "an image goes here". */
+  plain?: boolean;
+  /** A flat, soft-tinted field with the project name and no label or shapes. */
+  quiet?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  label = 'Image placeholder',
+  detail,
+  tone = 'teal',
+  ratio = 'card',
+  plain = false,
+  quiet = false,
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={['ph', `ph--${tone}`, `ph--${ratio}`, { 'ph--plain': plain, 'ph--quiet': quiet }, className]}>
+  {
+    plain && (
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M4 5h16v14H4V5zm0 11l5-5 4 4 2.5-2.5L20 17M15.5 9.5h.01"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    )
+  }
+  {!quiet && <span class="ph-tag">{label}</span>}
+  {plain && detail && <span class="ph-detail">{detail}</span>}
+  {!plain && title && <span class="ph-title" aria-hidden="true">{title}</span>}
+</div>
+
+<style>
+  .ph {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    width: 100%;
+    padding: clamp(1rem, 0.6rem + 1.5vw, 1.75rem);
+    border-radius: var(--radius);
+    container-type: inline-size;
+  }
+
+  .ph::before,
+  .ph::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+  }
+
+  .ph::before {
+    right: -12%;
+    top: -38%;
+    width: 62%;
+    aspect-ratio: 1;
+    background: var(--ph-shape);
+  }
+
+  .ph::after {
+    right: 14%;
+    bottom: -30%;
+    width: 30%;
+    aspect-ratio: 1;
+    border: 2px solid var(--ph-ring);
+  }
+
+  .ph--wide {
+    aspect-ratio: 16 / 9;
+  }
+  .ph--card {
+    aspect-ratio: 16 / 10;
+  }
+  .ph--thumb {
+    aspect-ratio: 4 / 3;
+  }
+  .ph--portrait {
+    aspect-ratio: 4 / 5;
+  }
+
+  .ph--teal {
+    --ph-shape: rgb(255 255 255 / 0.12);
+    --ph-ring: rgb(255 255 255 / 0.35);
+    background: var(--color-teal);
+    color: #fff;
+  }
+
+  .ph--deep {
+    --ph-shape: var(--color-coral);
+    --ph-ring: rgb(255 255 255 / 0.3);
+    background: var(--color-deep);
+    color: #fff;
+  }
+
+  .ph--coral {
+    --ph-shape: var(--color-coral);
+    --ph-ring: var(--color-deep);
+    background: var(--color-coral-soft);
+    color: var(--color-deep);
+  }
+
+  .ph--sand {
+    --ph-shape: var(--color-teal-soft);
+    --ph-ring: var(--color-teal);
+    background: var(--color-sand);
+    color: var(--color-deep);
+  }
+
+  .ph-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 11cqi, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .ph-tag {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    max-width: calc(100% - 1.5rem);
+    padding: 0.15rem 0.5rem;
+    border: 1px dashed currentColor;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  /* ---- quiet: soft tint and the project name only ---- */
+  .ph--quiet::before,
+  .ph--quiet::after {
+    content: none;
+  }
+
+  .ph--quiet.ph--teal {
+    background: var(--color-teal-soft);
+    color: var(--color-teal);
+  }
+
+  .ph--quiet.ph--coral {
+    color: #a53d29;
+  }
+
+  .ph--quiet .ph-title {
+    font-size: clamp(1.25rem, 8cqi, 2.5rem);
+    font-weight: 750;
+    line-height: 1.05;
+    opacity: 0.85;
+  }
+
+  /* ---- plain: a framed, empty image slot ---- */
+  .ph--plain {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-align: center;
+  }
+
+  .ph--plain::before {
+    inset: 0.875rem;
+    width: auto;
+    aspect-ratio: auto;
+    border: 1.5px dashed currentColor;
+    border-radius: var(--radius-sm);
+    background: none;
+    opacity: 0.4;
+  }
+
+  .ph--plain::after {
+    content: none;
+  }
+
+  .ph--plain svg {
+    opacity: 0.85;
+  }
+
+  .ph--plain .ph-tag {
+    position: static;
+    padding: 0;
+    border: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+  }
+
+  .ph-detail {
+    max-width: 18rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    opacity: 0.9;
+  }
+</style>

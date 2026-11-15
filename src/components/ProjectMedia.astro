@@ -1,0 +1,76 @@
+---
+/** Shows a project's approved hero image, or a marked placeholder when there isn't one. */
+import { Image } from 'astro:assets';
+import PlaceholderMedia from './PlaceholderMedia.astro';
+import { getHeroImage, type Project } from '../lib/content';
+
+interface Props {
+  project: Project;
+  ratio?: 'wide' | 'card' | 'thumb';
+  /** CSS sizes hint for responsive images. */
+  sizes?: string;
+  eager?: boolean;
+  /** Show the project name inside the placeholder. Turn off where the title sits right beside it. */
+  showTitle?: boolean;
+  /** Use a plain framed image slot (no shapes) as the placeholder. */
+  plain?: boolean;
+  /** Use the quiet placeholder (soft tint, project name, no label). */
+  quiet?: boolean;
+}
+
+const {
+  project,
+  ratio = 'card',
+  sizes = '(min-width: 48rem) 50vw, 100vw',
+  eager = false,
+  showTitle = true,
+  plain = false,
+  quiet = false,
+} = Astro.props;
+const { heroImageAlt, heroImagePosition, heroImageStyle, title, tone } = project.data;
+const heroImage = getHeroImage(project);
+// Screenshots keep their top-left corner (logo and headings) when cropped.
+// That default only applies in the homepage showcases; listing cards show the image centred.
+const position =
+  heroImagePosition ?? (heroImageStyle === 'screenshot' && plain ? 'left top' : undefined);
+---
+
+{
+  heroImage ? (
+    <Image
+      class:list={['media', `media--${ratio}`]}
+      src={heroImage}
+      alt={heroImageAlt ?? ''}
+      widths={[360, 640, 960, 1280]}
+      sizes={sizes}
+      loading={eager ? 'eager' : 'lazy'}
+      style={position ? `object-position: ${position}` : undefined}
+    />
+  ) : (
+    <PlaceholderMedia
+      title={showTitle ? title : undefined}
+      detail={`Approved ${title} imagery to be supplied`}
+      tone={tone}
+      ratio={ratio}
+      plain={plain}
+      quiet={quiet}
+    />
+  )
+}
+
+<style>
+  .media {
+    width: 100%;
+    border-radius: var(--radius);
+    object-fit: cover;
+  }
+  .media--wide {
+    aspect-ratio: 16 / 9;
+  }
+  .media--card {
+    aspect-ratio: 16 / 10;
+  }
+  .media--thumb {
+    aspect-ratio: 4 / 3;
+  }
+</style>

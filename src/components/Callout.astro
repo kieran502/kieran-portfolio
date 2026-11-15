@@ -1,0 +1,37 @@
+---
+/** Highlighted panel for a key statement, e.g. personal contribution or an attribution note. */
+interface Props {
+  title?: string;
+  tone?: 'teal' | 'coral';
+}
+
+const { title, tone = 'teal' } = Astro.props;
+---
+
+<aside class:list={['callout', `callout--${tone}`]}>
+  {title && <h3 class="callout-title">{title}</h3>}
+  <div class="callout-body"><slot /></div>
+</aside>
+
+<style>
+  .callout {
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    border-radius: var(--radius);
+  }
+
+  .callout--teal {
+    background: var(--color-teal-soft);
+  }
+
+  .callout--coral {
+    background: var(--color-coral-soft);
+  }
+
+  .callout-title {
+    margin-bottom: 0.7rem;
+  }
+
+  .callout-body :global(* + *) {
+    margin-top: 0.8rem;
+  }
+</style>

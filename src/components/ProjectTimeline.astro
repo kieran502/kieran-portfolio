@@ -1,0 +1,106 @@
+---
+/**
+ * An ordered run of image-led panels, e.g. "How the platform evolved".
+ * Each panel leads with its photograph. A panel without an approved image yet shows a
+ * quiet empty frame rather than artwork. Order only: no dates are shown, so none are implied.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  steps: { title: string; text: string; image?: ImageMetadata; imageAlt?: string }[];
+}
+
+const { steps } = Astro.props;
+---
+
+<ol class="steps" role="list" style={`--count: ${steps.length}`}>
+  {
+    steps.map((step) => (
+      <li class="step">
+        <div class:list={['visual', { 'visual--empty': !step.image }]}>
+          {step.image ? (
+            <Image
+              src={step.image}
+              alt={step.imageAlt ?? ''}
+              widths={[360, 640, 960]}
+              sizes="(min-width: 64rem) 25vw, (min-width: 40rem) 50vw, 100vw"
+            />
+          ) : (
+            <span class="pending">Image to follow</span>
+          )}
+        </div>
+        <h3>{step.title}</h3>
+        <p class="text">{step.text}</p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .steps {
+    display: grid;
+    gap: 2.25rem 1.5rem;
+  }
+
+  @media (min-width: 40rem) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .steps {
+      grid-template-columns: repeat(min(var(--count), 4), minmax(0, 1fr));
+    }
+  }
+
+  .step {
+    position: relative;
+    padding-top: 1.25rem;
+    border-top: 3px solid var(--color-coral);
+  }
+
+  .visual {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
+  .visual :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .visual--empty {
+    display: grid;
+    place-items: center;
+    border: 1.5px dashed #c9d3ce;
+    background: var(--color-surface);
+  }
+
+  .pending {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* On small screens an empty frame stays short so it does not push the copy away. */
+  @media (max-width: 39.99rem) {
+    .visual--empty {
+      aspect-ratio: auto;
+      min-height: 5.5rem;
+    }
+  }
+
+  h3 {
+    margin-top: 1.1rem;
+    font-size: 1.3125rem;
+    line-height: 1.2;
+  }
+
+  .text {
+    margin-top: 0.5rem;
+    color: var(--color-muted);
+  }
+</style>

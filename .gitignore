@@ -1,0 +1,22 @@
+node_modules/
+dist/
+dist-review/
+.astro/
+.env
+.env.*
+!.env.example
+!.env.deploy.example
+.DS_Store
+Thumbs.db
+npm-debug.log*
+.checkpoints/
+
+# Kept on this PC only, not in the public repository:
+# private briefs, illustrative mock-ups (never to be published as real work), review screenshots
+BUILD_BRIEF.md
+docs/design-update-v2/
+docs/review-screenshots/
+homepage_reference.png
+site_pages_reference.png
+preview-test.html
+preview-test/

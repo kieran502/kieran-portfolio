@@ -1,0 +1,28 @@
+{
+  "name": "kieran-sawyer-portfolio",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "deploy:review": "node scripts/deploy-review.mjs",
+    "deploy:netlify": "node scripts/deploy-netlify.mjs"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/sitemap": "^3.7.5",
+    "@fontsource-variable/figtree": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "astro": "^7.4.12",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "basic-ftp": "^6.2.6"
+  }
+}

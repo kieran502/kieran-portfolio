@@ -1,0 +1,117 @@
+---
+/**
+ * Headline figure(s) with supporting highlights, on the deep teal band.
+ * Every figure keeps its context line so a number is never shown without its meaning.
+ */
+interface Props {
+  stats: { value: string; label: string; context: string }[];
+  highlights?: string[];
+}
+
+const { stats, highlights = [] } = Astro.props;
+---
+
+<section class="impact" aria-label="Key results">
+  <div class:list={['container', 'impact-grid', { 'impact-grid--split': highlights.length > 0 }]}>
+    <div class="figures">
+      {
+        stats.map((stat) => (
+          <div class="figure">
+            <p class="value">{stat.value}</p>
+            <p class="label">{stat.label}</p>
+            <p class="context">{stat.context}</p>
+          </div>
+        ))
+      }
+    </div>
+    {
+      highlights.length > 0 && (
+        <ul class="highlights" role="list">
+          {highlights.map((highlight) => (
+            <li>{highlight}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .impact {
+    background: var(--color-deep);
+    color: #fff;
+    padding-block: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+  }
+
+  .impact-grid {
+    display: grid;
+    align-items: center;
+    gap: 2.25rem clamp(2rem, 1rem + 4vw, 5rem);
+  }
+
+  .figures {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .value {
+    color: var(--color-coral);
+    font-size: clamp(3.25rem, 2.2rem + 4.4vw, 5.75rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .label {
+    margin-top: 0.9rem;
+    font-size: clamp(1.1875rem, 1.1rem + 0.5vw, 1.4375rem);
+    font-weight: 650;
+    line-height: 1.3;
+  }
+
+  .context {
+    margin-top: 0.5rem;
+    color: #c3d6d4;
+    font-size: 0.9688rem;
+  }
+
+  .highlights {
+    display: grid;
+    gap: 0;
+  }
+
+  .highlights li {
+    padding-block: 1.1rem;
+    border-top: 1px solid rgb(255 255 255 / 0.22);
+    font-size: 1.125rem;
+    font-weight: 550;
+    line-height: 1.4;
+  }
+
+  .highlights li:last-child {
+    border-bottom: 1px solid rgb(255 255 255 / 0.22);
+  }
+
+  @media (min-width: 62rem) {
+    .impact-grid--split {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+
+    .highlights {
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      grid-auto-flow: column;
+      align-self: stretch;
+    }
+
+    .highlights li,
+    .highlights li:last-child {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0 0.5rem clamp(1.25rem, 0.5rem + 1.5vw, 2rem);
+      border: 0;
+      border-left: 1px solid rgb(255 255 255 / 0.22);
+    }
+  }
+</style>
