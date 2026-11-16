@@ -36,7 +36,7 @@ intro: I was involved in Mardles from the beginning through to the end of its de
 stats:
   - value: 1 million+
     label: units sold across the Mardles product range
-    context: A product-range figure, not a personal sales attribution.
+    context: A figure for the product range as a whole, not a personal sales attribution. I worked on the platform behind it throughout its life.
     verification: Stated in the build brief (section 5). Source document to be recorded before launch.
 
 highlights:

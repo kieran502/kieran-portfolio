@@ -3,6 +3,7 @@ title: "Sample article: how long-form writing looks on this site"
 description: A demonstration piece that exercises every element of the article template. Replace it with a real article before launch.
 date: 2026-11-15
 category: Sample
+draft: true
 tags:
   - sample
   - template

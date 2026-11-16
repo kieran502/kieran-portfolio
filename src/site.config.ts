@@ -7,7 +7,7 @@ export const site = {
   name: 'Kieran Sawyer',
   tagline: 'Product, technology and AI leadership',
   description:
-    'Kieran Sawyer: 15+ years of practical digital product and technology delivery across healthcare, education, consumer products, enterprise and aviation.',
+    'Kieran Sawyer is a technology and product leader with more than 15 years of experience delivering digital products across healthcare, education, consumer products, enterprise and aviation.',
   locale: 'en_GB',
 };
 
@@ -32,43 +32,47 @@ export const contact: { email: string | null; linkedin: string | null } = {
 export const capabilities = [
   {
     icon: 'product',
-    title: 'Product delivery',
-    text: 'From first concept through launch and long-term operation.',
-  },
-  {
-    icon: 'ai',
-    title: 'AI in practice',
-    text: 'Assessing where AI is genuinely useful, and putting it to work.',
+    title: 'Product strategy and ownership',
+    text: 'Deciding what to build and why, then owning it through launch and ongoing improvement.',
   },
   {
     icon: 'technical',
-    title: 'Technical leadership',
-    text: 'Architecture, platform and integration decisions.',
+    title: 'Technical direction',
+    text: 'Solution architecture and platform decisions for complex digital products.',
+  },
+  {
+    icon: 'ai',
+    title: 'Practical AI and automation',
+    text: 'Identifying where AI and automation are genuinely useful, and where they are not.',
   },
   {
     icon: 'team',
     title: 'Teams and stakeholders',
-    text: 'Leading multidisciplinary teams; working with clients and sponsors.',
+    text: 'Leading multidisciplinary teams and working closely with clients and stakeholders.',
   },
 ] as const;
 
-/** Homepage "How I work" steps. DRAFT COPY: written as a starting point for Kieran to rewrite. */
+/**
+ * Homepage "How I work" principles.
+ * EDITORIAL NOTE (not shown on the site): the supporting copy was drafted for Kieran and
+ * should be confirmed as an accurate description of how he works before launch.
+ */
 export const approach = [
   {
     title: 'Find the real problem',
-    text: 'Start with the people involved and how the work actually happens, not with the technology.',
+    text: 'I start with the people who will use and run the product. The brief a client arrives with is often a symptom of something else.',
   },
   {
     title: 'Build the right thing',
-    text: 'Shape a scope the team can genuinely deliver, then deliver it.',
+    text: 'I agree a scope the team can deliver and the budget can support, and leave out features that do not earn their place. That includes AI.',
   },
   {
     title: 'Keep it honest',
-    text: 'Report progress, risk and results plainly, including what did not work.',
+    text: 'Clients and teams hear about progress, risk and cost as they are, early enough to act on them.',
   },
   {
     title: 'Evolve with evidence',
-    text: 'Let real usage, not assumptions, decide what comes next.',
+    text: 'After launch, real usage and feedback decide what gets built next, not the original plan.',
   },
 ];
 
@@ -81,7 +85,7 @@ export const plannedResources: { title: string; format: 'interactive' | 'pdf'; s
   {
     title: 'AI Opportunity Assessment',
     format: 'interactive',
-    summary: 'A questionnaire that runs entirely in your browser. No visitor data is collected or stored.',
+    summary: 'A practical tool to help organisations assess whether an AI idea is worth pursuing.',
   },
   {
     title: 'Practical guides',

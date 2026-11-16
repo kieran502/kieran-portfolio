@@ -21,6 +21,7 @@ const isScreenshot = Boolean(getHeroImage(project)) && heroImageStyle === 'scree
 
 // Showcase cards (panel, row) keep to title, summary and call to action.
 const isSplit = variant === 'panel' || variant === 'row';
+const showcaseTags = [sector, ...capabilities].filter(Boolean).slice(0, 2);
 // Listing cards use the fuller description; the homepage showcases keep the short summary.
 const summary = isSplit ? project.data.summary : (project.data.listingSummary ?? project.data.summary);
 
@@ -70,7 +71,14 @@ const media = {
               {isSplit ? 'Case study' : 'Read case study'} <span class="arrow">&rarr;</span>
             </span>
           ) : (
-            isSplit && <span class="quiet">Case study in preparation</span>
+            /* No case study yet: the showcase states what the project was, with no link. */
+            isSplit && showcaseTags.length > 0 && (
+              <span class="tags">
+                {showcaseTags.map((tag) => (
+                  <span>{tag}</span>
+                ))}
+              </span>
+            )
           )}
           {note && <span class="quiet note">{note}</span>}
         </p>
@@ -362,11 +370,20 @@ const media = {
   }
 
   /* Call to action. "Case study" is an outlined button (the whole card is the link).
-     Unfinished case studies get a dashed, non-interactive label in the same position. */
+     Projects without a case study show their sector and capability in the same position. */
+  .tags {
+    display: grid;
+    gap: 0.1rem;
+    color: var(--card-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
   .card--panel .read,
-  .card--row .read,
-  .card--panel .quiet:not(.note),
-  .card--row .quiet:not(.note) {
+  .card--row .read {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -385,12 +402,6 @@ const media = {
   .card--row.card--link:hover .read {
     background: var(--card-accent);
     color: var(--card-bg);
-  }
-
-  .card--panel .quiet:not(.note),
-  .card--row .quiet:not(.note) {
-    border: 1px dashed currentColor;
-    font-size: 0.875rem;
   }
 
   .card--panel :global(:focus-visible),

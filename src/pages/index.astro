@@ -24,7 +24,9 @@ const featuredProjects = projects.filter((project) => project.data.featured);
 const leadProjects = featuredProjects.slice(0, 2);
 const supportingProjects = featuredProjects.slice(2, 4);
 
-const recentArticles = (await getArticles()).slice(0, 3);
+// Published articles only: drafts and samples never appear on the homepage, even in development.
+const recentArticles = (await getArticles()).filter((article) => !article.data.draft).slice(0, 3);
+const writingTopics = ['Technology leadership', 'Product delivery', 'Practical AI adoption'];
 
 // Outcome figures are pulled from featured projects, so they always carry their context.
 // Only verified figures appear: the strip sizes itself to however many there are.
@@ -38,7 +40,7 @@ const projectStats = featuredProjects.flatMap((project) =>
   })),
 );
 
-const [featuredResource, ...otherResources] = plannedResources;
+const [featuredResource] = plannedResources;
 const formatLabels = { interactive: 'Interactive tool', pdf: 'PDF download' };
 
 const icons: Record<string, string> = {
@@ -66,9 +68,9 @@ const stepIcons = [
         <h1>Technology and product leadership that delivers real results.</h1>
         <hr class="rule" />
         <p class="lede">
-          15+ years of practical digital product and technology delivery, leading teams and setting
-          technical direction across healthcare, education, consumer products, enterprise and
-          aviation.
+          For more than 15 years I've led digital products from first idea through launch and
+          ongoing improvement: setting product and technical direction, leading multidisciplinary
+          teams, and finding practical uses for AI and automation.
         </p>
         <div class="hero-actions">
           <a class="button button--accent button--large" href="/work/">
@@ -170,8 +172,8 @@ const stepIcons = [
         <StatItem
           inverse
           value="15+ years"
-          label="in digital product and technology delivery"
-          context="Across healthcare, education, consumer products, enterprise and aviation."
+          label="of digital product and technology delivery experience"
+          context="Leading products and multidisciplinary teams for organisations in healthcare, education, aviation, consumer products and enterprise."
         />
         {projectStats.map((stat) => <StatItem inverse {...stat} />)}
       </div>
@@ -184,10 +186,6 @@ const stepIcons = [
       <div class="approach-intro">
         <p class="eyebrow">My approach</p>
         <h2 id="approach-heading">How I work.</h2>
-        <p class="draft-note">
-          <span class="placeholder-tag">Draft copy</span>
-          For Kieran to review and rewrite.
-        </p>
       </div>
       <ol class="approach" role="list">
         {
@@ -213,26 +211,45 @@ const stepIcons = [
 
   <!-- Writing and resources -->
   <section class="library-band">
-    <div class="container library">
-      <div class="library-intro">
-        <p class="eyebrow">Recent writing</p>
-        <h2>Ideas, lessons and practical notes.</h2>
-        <a class="text-link" href="/writing/">
-          All writing <span class="arrow" aria-hidden="true">&rarr;</span>
-        </a>
-      </div>
-
+    <div class:list={['container', 'library', { 'library--intro-only': recentArticles.length === 0 }]}>
       {
         recentArticles.length > 0 ? (
-          <ul class="article-grid" role="list">
-            {recentArticles.map((article) => (
-              <li>
-                <ArticleCard article={article} variant="card" />
-              </li>
-            ))}
-          </ul>
+          <>
+            <div class="library-intro">
+              <p class="eyebrow">Recent writing</p>
+              <h2>Ideas, lessons and practical notes.</h2>
+              <p class="library-lede">
+                I write about technology leadership, product delivery and practical AI adoption.
+              </p>
+              <a class="text-link" href="/writing/">
+                All writing <span class="arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+            <ul class="article-grid" role="list">
+              {recentArticles.map((article) => (
+                <li>
+                  <ArticleCard article={article} variant="card" />
+                </li>
+              ))}
+            </ul>
+          </>
         ) : (
-          <p class="muted">No articles have been published yet.</p>
+          <div class="library-intro library-editorial">
+            <p class="eyebrow">Writing</p>
+            <h2>Ideas, lessons and practical notes.</h2>
+            <p class="library-lede">
+              I write about technology leadership, product delivery and practical AI adoption,
+              drawing on what has and hasn't worked on real projects.
+            </p>
+            <ul class="topics" role="list">
+              {writingTopics.map((topic) => (
+                <li>{topic}</li>
+              ))}
+            </ul>
+            <a class="text-link" href="/writing/">
+              Go to writing <span class="arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
         )
       }
 
@@ -241,23 +258,12 @@ const stepIcons = [
           <aside class="resource" aria-labelledby="resource-heading">
             <p class="resource-eyebrow">
               <span>Featured resource</span>
-              <span class="placeholder-tag">Planned &middot; in development</span>
+              <span class="status-pill">In development</span>
             </p>
             <h2 id="resource-heading">{featuredResource.title}</h2>
             <p class="resource-format">{formatLabels[featuredResource.format]}</p>
-            <p>{featuredResource.summary}</p>
-            {otherResources.length > 0 && (
-              <p class="resource-also">
-                Also planned:{' '}
-                {otherResources
-                  .map((item) => `${item.title} (${formatLabels[item.format]})`)
-                  .join(', ')}
-                .
-              </p>
-            )}
-            <a class="button button--deep" href="/resources/">
-              About the resources <span class="arrow" aria-hidden="true">&rarr;</span>
-            </a>
+            <p class="resource-summary">{featuredResource.summary}</p>
+            <p class="resource-status">It will be published here when it is ready.</p>
           </aside>
         )
       }
@@ -551,12 +557,6 @@ const stepIcons = [
     padding-block: clamp(2.5rem, 2rem + 2.5vw, 4rem);
   }
 
-  .draft-note {
-    margin-top: 0.9rem;
-    color: var(--color-muted);
-    font-size: var(--text-sm);
-  }
-
   .approach {
     display: grid;
     gap: 1.75rem 0;
@@ -610,8 +610,9 @@ const stepIcons = [
   }
 
   /* ---------- Writing and resources ---------- */
+  /* The footer supplies the space below this band. */
   .library-band {
-    padding-block: clamp(3rem, 2rem + 4vw, 5rem);
+    padding-top: clamp(3rem, 2rem + 4vw, 5rem);
   }
 
   .library {
@@ -658,10 +659,66 @@ const stepIcons = [
     text-transform: uppercase;
   }
 
-  .resource-eyebrow .placeholder-tag {
-    margin-right: 0;
-    border-color: #a53d29;
-    color: #a53d29;
+  .status-pill {
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.75);
+    letter-spacing: 0.08em;
+  }
+
+  .resource-summary {
+    color: var(--color-deep);
+    font-size: var(--text-lg);
+    line-height: 1.4;
+  }
+
+  .resource-status {
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgb(24 60 64 / 0.15);
+    align-self: stretch;
+    color: #4c5f6e;
+    font-size: 0.9375rem;
+  }
+
+  .library-lede {
+    max-width: 34rem;
+    margin-bottom: 1.25rem;
+    font-size: var(--text-lg);
+    line-height: 1.45;
+  }
+
+  .library-intro h2 + .library-lede {
+    margin-top: -0.25rem;
+  }
+
+  .topics {
+    display: grid;
+    max-width: 34rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .topics li {
+    position: relative;
+    padding: 0.8rem 0 0.8rem 1.75rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-deep);
+    font-weight: 600;
+  }
+
+  .topics li:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .topics li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.45rem;
+    width: 0.9rem;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-coral);
   }
 
   .resource h2 {
@@ -676,15 +733,6 @@ const stepIcons = [
     text-transform: uppercase;
   }
 
-  .resource-also {
-    color: #4c5f6e;
-    font-size: 0.9375rem;
-  }
-
-  .resource .button {
-    margin-top: 0.75rem;
-  }
-
   @media (min-width: 62rem) {
     .library {
       grid-template-columns: minmax(0, 1fr) 22rem;
@@ -693,10 +741,20 @@ const stepIcons = [
     .library-intro {
       grid-column: 1 / -1;
     }
+
+    /* No published articles yet: the editorial introduction and the resource share the row. */
+    .library--intro-only {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      align-items: center;
+    }
+
+    .library--intro-only .library-intro {
+      grid-column: auto;
+    }
   }
 
   @media (min-width: 76rem) {
-    .library {
+    .library:not(.library--intro-only) {
       grid-template-columns: 14.5rem minmax(0, 1fr) 23rem;
     }
 

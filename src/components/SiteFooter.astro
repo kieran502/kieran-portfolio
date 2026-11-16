@@ -35,7 +35,8 @@ const year = new Date().getFullYear();
               )}
             </ul>
           ) : (
-            <p class="contact-placeholder">
+            /* A reminder for local development only: never part of the built site. */
+            import.meta.env.DEV && <p class="contact-placeholder">
               <span class="placeholder-tag">To supply</span>
               Email and LinkedIn links appear here once approved contact details are added to{' '}
               <code>src/site.config.ts</code>.
@@ -85,6 +86,16 @@ const year = new Date().getFullYear();
     border-radius: 50%;
     background: var(--color-coral);
     opacity: 0.9;
+  }
+
+  /* Below desktop width the disc is smaller, so the contact text never runs across it. */
+  @media (max-width: 71.99rem) {
+    .contact::after {
+      right: -6rem;
+      bottom: -9rem;
+      width: 14rem;
+      height: 14rem;
+    }
   }
 
   .contact-inner {
