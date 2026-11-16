@@ -70,13 +70,13 @@ contributionPoints:
 evolution:
   - title: Original interactive products
     text: The early consumer products using AR.
-  - title: Books and interactive storytelling
+  - title: Books and storytelling
     text: Physical books linked to augmented experiences.
     image: ./detail-book-page.jpg
     imageAlt: Close-up of an illustrated Mardles book page showing a green parrot above a nest
   - title: Licensed content
     text: Experiences involving well-known licensed characters.
-  - title: Platform development
+  - title: Continued platform development
     text: Continued technical work to support the changing product range.
     image: ./detail-ar-screen.jpg
     imageAlt: Close-up of the Mardles app on a tablet, with a 3D house, car, tree and parrot standing on the book page and on-screen camera controls

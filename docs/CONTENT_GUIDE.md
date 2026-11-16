@@ -43,6 +43,8 @@ src/content/projects/
 
 The folder name becomes the web address: `mardles/` is published at `/work/mardles/`. The main image needs no setting: any file named `hero.jpg`, `hero.jpeg`, `hero.png` or `hero.webp` in the project's folder is used automatically, so you can replace it with a different format at any time. Keep only one `hero` file per folder. Add `heroImageAlt: a short description` to `index.md` so the image is described for screen readers.
 
+Organisation logos on the homepage: save each organisation's official logo in `src/assets/logos/`, named as listed in `src/site.config.ts` (for example `costa-coffee.svg`; `.png` and `.webp` also work). A logo appears as soon as its file is there, and the section stays hidden while the folder is empty. Only add a logo once you have checked you are allowed to use it.
+
 Case-study extras, all optional: `listingSummary` (fuller description for the Work page), `kicker`, `headline`, `intro`, `highlights`, `overview`, `overviewImage`, `challengePoints`, `contributionPoints`, `evolution` (each panel takes `title`, `text` and optionally `image: ./file.jpg` with `imageAlt`), `outcomePoints` and `gallery` (each entry takes `src: ./file.jpg`, `alt` and optionally `caption`). A section only appears when its field is filled in. See `mardles/index.md` for a worked example. Notes for your own reference go in lines starting with `#`; these are never shown on the site.
 
 Optional: `heroImageStyle: screenshot` shows an interface screenshot as a floating screen instead of cropping it, and `heroImagePosition` (for example `30% center`) chooses which part of a photo to keep when it is cropped.

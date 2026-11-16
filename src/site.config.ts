@@ -89,3 +89,32 @@ export const plannedResources: { title: string; format: 'interactive' | 'pdf'; s
     summary: 'Downloadable guides to read offline.',
   },
 ];
+
+/**
+ * "Selected organisations I've worked with" (homepage).
+ * A logo is shown only when its official artwork is saved as src/assets/logos/<logo>.svg
+ * (or .png / .webp) AND permission to use it has been checked. Leave an organisation's
+ * file out to hide it. Never substitute text or redrawn artwork for a logo.
+ */
+export const organisations = [
+  { name: 'NHS', logo: 'nhs' },
+  { name: 'Royal Air Force', logo: 'raf' },
+  { name: 'Costa Coffee', logo: 'costa' },
+  { name: 'Delta Air Lines', logo: 'delta' },
+  { name: 'University of Oxford', logo: 'oxford' },
+  { name: 'University College London (UCL)', logo: 'ucl' },
+  { name: 'GSK', logo: 'gsk' },
+  { name: 'Novartis', logo: 'novartis' },
+  { name: 'Unilever', logo: 'unilever' },
+  { name: 'Nissan', logo: 'nissan' },
+  { name: 'BBC', logo: 'bbc' },
+  { name: 'Royal Navy', logo: 'royal-navy' },
+  // Added by Kieran alongside the original shortlist.
+  { name: 'Channel 4', logo: 'channel4' },
+  { name: 'HSBC', logo: 'hsbc' },
+  { name: 'JLR', logo: 'jlr' },
+  { name: 'Johnson & Johnson', logo: 'jnj' },
+  { name: 'Lilly', logo: 'lilly' },
+  { name: 'Sky', logo: 'sky' },
+  { name: 'Takeda', logo: 'takeda' },
+];

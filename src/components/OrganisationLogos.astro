@@ -1,0 +1,142 @@
+---
+/**
+ * "Selected organisations I've worked with": an understated grid of official logos.
+ *
+ * A logo appears only when its artwork file exists in src/assets/logos/ (named after the
+ * organisation's `logo` value in site.config.ts, e.g. costa-coffee.svg). Organisations
+ * without a file are left out, and the whole section disappears when there are none, so
+ * nothing is ever shown as styled text standing in for a logo.
+ *
+ * Wording is deliberate: "worked with", never "trusted by" or "clients".
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { organisations } from '../site.config';
+
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/logos/*.{svg,png,webp,jpg,jpeg,SVG,PNG,WEBP,JPG,JPEG}',
+  { eager: true },
+);
+const bySlug = new Map(
+  Object.entries(files).map(([path, module]) => [
+    path.split('/').at(-1)?.replace(/\.[^.]+$/, '').toLowerCase() ?? '',
+    module.default,
+  ]),
+);
+const logos = organisations
+  .map((organisation) => ({ ...organisation, image: bySlug.get(organisation.logo) }))
+  .filter((organisation): organisation is typeof organisation & { image: ImageMetadata } =>
+    Boolean(organisation.image),
+  );
+---
+
+{
+  logos.length > 0 && (
+    <section class="organisations" aria-labelledby="organisations-heading">
+      <div class="container">
+        <div class="head">
+          <h2 id="organisations-heading">Selected organisations I've worked with</h2>
+          <p>
+            Experience delivering technology and digital products across healthcare, aviation,
+            education, consumer products and enterprise.
+          </p>
+        </div>
+        <ul class:list={['logos', { 'logos--eight': logos.length % 8 === 0 }]} role="list">
+          {logos.map((organisation) => (
+            <li>
+              <Image
+                src={organisation.image}
+                alt={`${organisation.name} logo`}
+                width={organisation.image.width}
+                height={organisation.image.height}
+                loading="lazy"
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .organisations {
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+    border-block: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .head {
+    display: grid;
+    gap: 0.4rem 2.5rem;
+    align-items: baseline;
+    margin-bottom: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+  }
+
+  @media (min-width: 60rem) {
+    .head {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+  }
+
+  h2 {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+    letter-spacing: -0.02em;
+  }
+
+  .head p {
+    color: var(--color-muted);
+    font-size: 0.9688rem;
+  }
+
+  .logos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 34rem) {
+    .logos {
+      gap: 0.75rem;
+    }
+  }
+
+  @media (min-width: 52rem) {
+    .logos {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .logos {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 72rem) {
+    /* A count that divides by eight sits in even rows of eight. */
+    .logos--eight {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+  }
+
+  .logos li {
+    display: grid;
+    place-items: center;
+    min-height: clamp(4.25rem, 3.5rem + 3vw, 5.5rem);
+    padding: 0.75rem clamp(0.6rem, 0.2rem + 1.6vw, 1.25rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: #fff;
+  }
+
+  /* Every logo fits the same box without being stretched: wide marks are limited by
+     width, tall or square marks by height, so they read at a similar visual size. */
+  .logos :global(img) {
+    width: auto;
+    height: auto;
+    max-width: min(100%, 8.5rem);
+    max-height: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+    object-fit: contain;
+  }
+</style>

@@ -6,6 +6,7 @@ import PlaceholderMedia from '../components/PlaceholderMedia.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import StatItem from '../components/StatItem.astro';
+import OrganisationLogos from '../components/OrganisationLogos.astro';
 import { capabilities, approach, plannedResources } from '../site.config';
 import { getProjects, getArticles, projectUrl } from '../lib/content';
 
@@ -125,6 +126,9 @@ const stepIcons = [
       </div>
     </div>
   </section>
+
+  <!-- Organisations: shown only for logos whose approved artwork is in src/assets/logos/ -->
+  <OrganisationLogos />
 
   <!-- Featured work: two lead projects, two supporting -->
   <section class="featured" aria-labelledby="featured-heading">
