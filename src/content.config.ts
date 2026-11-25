@@ -24,6 +24,59 @@ export const CAPABILITIES = [
   'Operational tools',
 ] as const;
 
+/**
+ * Portfolio classification vocabularies (see `classification` below).
+ * Shared across every project so the Work page can later filter by them
+ * ("Product ownership", "AI adoption" and so on). Add a value here before using it.
+ * Only add a value to a project when there is evidence for it.
+ */
+export const INDUSTRIES = ['Healthcare', 'Pharmaceuticals', 'Education and training'] as const;
+
+export const PROJECT_TYPES = [
+  'SaaS platform',
+  'Enterprise software',
+  'Learning management',
+  'Digital training',
+  'Interactive learning',
+  'Applied AI experimentation',
+] as const;
+
+export const SKILLS = [
+  'Product strategy',
+  'Product ownership',
+  'Technical leadership',
+  'Team leadership',
+  'Stakeholder management',
+  'Commercial development',
+  'Roadmap prioritisation',
+  'Security and compliance',
+  'AI adoption',
+  'International delivery',
+] as const;
+
+export const TECHNOLOGIES = [
+  'PHP',
+  'Laravel',
+  'AWS',
+  'Laravel Forge',
+  'JavaScript',
+  'Unity',
+  'C#',
+  'OpenAI API',
+] as const;
+
+export const INVOLVEMENT = [
+  'Original concept and product direction',
+  'Product ownership',
+  'Technical leadership',
+  'Team management',
+  'Commercial and client engagement',
+  'Ongoing support and maintenance',
+] as const;
+
+/** How directly I was responsible for the project as a whole. */
+export const INVOLVEMENT_LEVELS = ['Led', 'Core contributor', 'Contributor', 'Advisory'] as const;
+
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: ({ image }) =>
@@ -114,6 +167,65 @@ const projects = defineCollection({
         )
         .default([]),
       outcomePoints: z.array(z.string()).default([]),
+
+      /**
+       * Structured portfolio metadata, kept consistent across projects for future filtering.
+       * Title, summary, outcomes, imagery and the case-study URL already live in the fields above.
+       */
+      classification: z
+        .object({
+          industries: z.array(z.enum(INDUSTRIES)).default([]),
+          projectTypes: z.array(z.enum(PROJECT_TYPES)).default([]),
+          /** Every skill needs the evidence behind it. `featured` ones are shown on the case study. */
+          skills: z
+            .array(
+              z.object({
+                skill: z.enum(SKILLS),
+                evidence: z.string(),
+                featured: z.boolean().default(false),
+              }),
+            )
+            .default([]),
+          /**
+           * core: part of the main product. additional: used for selected parts.
+           * pilot: trialled, not fully deployed.
+           */
+          technologies: z
+            .array(
+              z.object({
+                name: z.enum(TECHNOLOGIES),
+                usage: z.enum(['core', 'additional', 'pilot']).default('core'),
+                note: z.string().optional(),
+              }),
+            )
+            .default([]),
+          involvement: z
+            .object({
+              level: z.enum(INVOLVEMENT_LEVELS),
+              areas: z.array(z.enum(INVOLVEMENT)).default([]),
+            })
+            .optional(),
+          /**
+           * Key highlights shown at the top of a case study: scale figures and verified
+           * results. Kept apart from `stats`, which also feed the homepage outcome strip.
+           * `unit` sits beside the figure (e.g. "in revenue"); `label` sits beneath it.
+           */
+          keyFacts: z
+            .array(
+              z.object({
+                value: z.string(),
+                unit: z.string().optional(),
+                label: z.string(),
+                context: z.string().optional(),
+                kind: z.enum(['outcome', 'scale']).default('scale'),
+              }),
+            )
+            .default([]),
+        })
+        .optional(),
+
+      /** true = the case study has its own page in src/pages/work/ instead of the shared template. */
+      customCaseStudy: z.boolean().default(false),
 
       relatedProjects: z.array(reference('projects')).default([]),
       draft: z.boolean().default(false),

@@ -1,0 +1,177 @@
+---
+/**
+ * A project's structured classification: featured skills with their evidence, then
+ * industries, project types, involvement and technologies. Reusable on any case study
+ * whose index.md has a `classification` block. Renders nothing without one.
+ */
+import type { Project } from '../lib/content';
+
+interface Props {
+  project: Project;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { project, headingLevel: Heading = 'h2' } = Astro.props;
+const classification = project.data.classification;
+const skills = classification?.skills.filter((s) => s.featured) ?? [];
+const technologies = classification?.technologies ?? [];
+
+const usageLabel = { core: '', additional: 'selected use', pilot: 'pilot' } as const;
+
+const rows = classification
+  ? [
+      { term: 'Industries', values: classification.industries },
+      { term: 'Project type', values: classification.projectTypes },
+      {
+        term: 'My involvement',
+        values: classification.involvement?.areas ?? [],
+      },
+    ].filter((row) => row.values.length > 0)
+  : [];
+---
+
+{
+  classification && (
+    <div class="classification">
+      {skills.length > 0 && (
+        <div class="skills">
+          <Heading id="skills-heading" class="skills-title">
+            Skills demonstrated
+          </Heading>
+          <ul class="skill-list" role="list" aria-labelledby="skills-heading">
+            {skills.map((item) => (
+              <li>
+                <span class="skill">{item.skill}</span>
+                <span class="evidence">{item.evidence}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {(rows.length > 0 || technologies.length > 0) && (
+        <dl class="facets">
+          {rows.map((row) => (
+            <div class="facet">
+              <dt>{row.term}</dt>
+              <dd>
+                <ul class="pills" role="list">
+                  {row.values.map((value) => (
+                    <li class="pill">{value}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))}
+          {technologies.length > 0 && (
+            <div class="facet">
+              <dt>Technologies</dt>
+              <dd>
+                <ul class="pills" role="list">
+                  {technologies.map((tech) => (
+                    <li class:list={['pill', { 'pill--qualified': tech.usage !== 'core' }]}>
+                      {tech.name}
+                      {tech.usage !== 'core' && <span class="qualifier"> ({usageLabel[tech.usage]})</span>}
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )}
+        </dl>
+      )}
+    </div>
+  )
+}
+
+<style>
+  .classification {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+
+  .skills-title {
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    line-height: 1.05;
+  }
+
+  .skill-list {
+    display: grid;
+    gap: 0 clamp(1.5rem, 1rem + 2vw, 3rem);
+    margin-top: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+  }
+
+  @media (min-width: 40rem) {
+    .skill-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .skill-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .skill-list li {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding-block: 1.1rem 1.4rem;
+    border-top: 2px solid var(--color-deep);
+  }
+
+  .skill {
+    color: var(--color-deep);
+    font-size: 1.1875rem;
+    font-weight: 750;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  .evidence {
+    color: var(--color-text);
+    font-size: 0.9688rem;
+    line-height: 1.5;
+  }
+
+  .facets {
+    display: grid;
+    margin: 0;
+  }
+
+  .facet {
+    display: grid;
+    gap: 0.6rem 2rem;
+    padding-block: 1.1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  @media (min-width: 48rem) {
+    .facet {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      align-items: baseline;
+    }
+  }
+
+  .facet dt {
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .facet dd {
+    margin: 0;
+  }
+
+  .pill--qualified {
+    border-style: dashed;
+    border-color: #b9c4c0;
+  }
+
+  .qualifier {
+    color: var(--color-muted);
+  }
+</style>

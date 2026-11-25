@@ -94,6 +94,12 @@ challenge: |
 
 Remove every placeholder before launch.
 
+### Project classification
+
+Projects can carry a `classification` block: `industries`, `projectTypes`, `skills` (each with the `evidence` behind it; `featured: true` shows it on the case study), `technologies` (each with `usage`: `core`, `additional` or `pilot`, and an optional `note`), `involvement` (`level` plus `areas`) and `keyFacts` (highlight figures with `value`, `label`, optional `unit` shown beside the figure, such as "in revenue", optional `context`, and `kind`: `outcome` or `scale`). The allowed values are listed at the top of `src/content.config.ts`, so every project uses the same terms and the Work page can filter by them later. Only add a skill or technology when there is evidence for it. Unlike `stats`, `keyFacts` never appear in the homepage outcome strip. See `ignyte/index.md` for a worked example.
+
+`customCaseStudy: true` means the project has its own page in `src/pages/work/` (Ignyte does) instead of the shared case-study template.
+
 ### Sectors and capabilities
 
 The allowed values are listed at the top of `src/content.config.ts`. To add a new one, add it to that list first. The Work page filters update automatically.

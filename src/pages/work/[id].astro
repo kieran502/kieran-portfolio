@@ -18,7 +18,7 @@ import { getProjects, type Project } from '../../lib/content';
 export async function getStaticPaths() {
   const projects = await getProjects();
   return projects
-    .filter((project) => project.data.caseStudyReady)
+    .filter((project) => project.data.caseStudyReady && !project.data.customCaseStudy)
     .map((project) => ({ params: { id: project.id }, props: { project } }));
 }
 
