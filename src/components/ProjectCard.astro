@@ -235,6 +235,9 @@ const media = {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
+    /* Own stacking context: the image and wedge sit at z-index -1 inside it, so the
+       title link's ::after (which covers the whole card) stays on top of them. */
+    isolation: isolate;
     overflow: hidden;
     border-radius: calc(var(--radius) + 6px);
     background: var(--card-bg);
@@ -322,10 +325,9 @@ const media = {
   }
 
   /* Text */
+  /* Not positioned, so the title link's ::after spans the whole card, image included. */
   .card--panel .body,
   .card--row .body {
-    position: relative;
-    z-index: 1;
     justify-content: center;
     gap: 0.8rem;
     padding: clamp(1.5rem, 1rem + 1.6vw, 2.25rem);
@@ -422,6 +424,7 @@ const media = {
 
     .card--panel .media {
       position: absolute;
+      z-index: -1;
       inset: 0 0 0 auto;
       width: 57%;
       clip-path: polygon(24% 0, 100% 0, 100% 100%, 0 100%);
@@ -458,6 +461,7 @@ const media = {
     .card--panel::before {
       content: '';
       position: absolute;
+      z-index: -1;
       inset: 0;
       background: var(--card-wedge);
       clip-path: polygon(31% 100%, 43.5% 100%, 50% 52%);
