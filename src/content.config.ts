@@ -111,7 +111,21 @@ const projects = defineCollection({
       gallery: z
         .array(z.object({ src: image(), alt: z.string(), caption: z.string().optional() }))
         .default([]),
-      video: z.object({ url: z.url(), title: z.string() }).optional(),
+      /**
+       * Either `file` (a video saved in the project's folder, e.g. mardles.mp4, shown in a
+       * player on the page) or `url` (a video hosted elsewhere, shown as a link).
+       * `poster` is the still shown before the video plays.
+       */
+      video: z
+        .object({
+          title: z.string(),
+          file: z.string().optional(),
+          url: z.url().optional(),
+          poster: image().optional(),
+          caption: z.string().optional(),
+        })
+        .refine((video) => video.file || video.url, { message: 'A video needs a `file` or a `url`.' })
+        .optional(),
       assetPermissionStatus: z
         .enum(['not-requested', 'requested', 'approved', 'not-required'])
         .default('not-requested'),

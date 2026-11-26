@@ -21,8 +21,11 @@ assetPermissionStatus: not-requested
 #   redesign brief. Check each against Kieran's actual experience before launch.
 # - Do not add dates, team sizes, budgets, revenue, downloads or architecture
 #   details unless they are verified.
-# - Evolution panels: "Original interactive products" and "Licensed content" have
-#   no approved image yet. Add `image: ./file.jpg` and `imageAlt:` to each when ready.
+# - Evolution images: evolution-original.jpg and evolution-licensed.png supplied by
+#   Kieran (November 2026). evolution-licensed.png shows a Disney Pixar character
+#   model, and mardles.mp4 briefly shows Shaun the Sheep (Aardman): see the licensed
+#   imagery note below. Kieran confirmed both are cleared for his portfolio
+#   (November 2026). video-poster.jpg is a frame taken from mardles.mp4.
 #   detail-ar-screen.jpg and detail-book-page.jpg are crops of hero.png, not new photos.
 # - Gallery: only two approved Mardles images exist so far. Add more under `gallery:`.
 # - Licensed imagery (Disney Pixar, Aardman) needs permission before use.
@@ -70,12 +73,16 @@ contributionPoints:
 evolution:
   - title: Original interactive products
     text: The early consumer products using AR.
+    image: ./evolution-original.jpg
+    imageAlt: A Mardles turtle character standing on a wooden table in augmented reality, beside the illustrated sticker that triggers it
   - title: Books and storytelling
     text: Physical books linked to augmented experiences.
     image: ./detail-book-page.jpg
     imageAlt: Close-up of an illustrated Mardles book page showing a green parrot above a nest
   - title: Licensed content
     text: Experiences involving well-known licensed characters.
+    image: ./evolution-licensed.png
+    imageAlt: A 3D model of Buzz Lightyear shown as a wireframe in the Unity editor
   - title: Continued platform development
     text: Continued technical work to support the changing product range.
     image: ./detail-ar-screen.jpg
@@ -93,6 +100,12 @@ gallery:
     alt: A child holding a tablet over an open Mardles book. On the screen, a 3D house, a red car, a tree and a parrot appear on top of the page.
   - src: ./mardles-1.png
     alt: Mardles promotional image of three children watching animated dragons, a dinosaur and other characters appear above a phone
+
+video:
+  title: Mardles in action
+  file: mardles.mp4
+  poster: ./video-poster.jpg
+  caption: A short promotional video showing Mardles characters brought to life through the app.
 
 relatedProjects:
   - ignyte
