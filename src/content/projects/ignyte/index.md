@@ -74,6 +74,7 @@ classification:
   technologies:
     - name: PHP
     - name: Laravel
+    - name: MariaDB
     - name: AWS
     - name: Laravel Forge
     - name: JavaScript
@@ -84,6 +85,9 @@ classification:
     - name: OpenAI API
       usage: additional
       note: Simpler AI-assisted sales practice used by learners. More advanced versions were piloted, not fully deployed.
+    - name: Amazon Polly
+      usage: additional
+      note: Used in the AI-assisted sales practice tools.
   involvement:
     level: Led
     areas:

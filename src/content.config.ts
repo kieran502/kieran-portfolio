@@ -57,12 +57,14 @@ export const SKILLS = [
 export const TECHNOLOGIES = [
   'PHP',
   'Laravel',
+  'MariaDB',
   'AWS',
   'Laravel Forge',
   'JavaScript',
   'Unity',
   'C#',
   'OpenAI API',
+  'Amazon Polly',
 ] as const;
 
 export const INVOLVEMENT = [
